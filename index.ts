@@ -1,24 +1,46 @@
-import { createServer } from 'http';
+import { createServer, IncomingMessage, ServerResponse } from 'http';
 
 import 'dotenv/config';
 
+import { sendRes } from './helpers/sendRes';
+import { getHandler } from './handlers/getHandler';
+import { postHandler } from './handlers/postHandler';
+import { putHandler } from './handlers/putHandler';
+import { deleteHandler } from './handlers/deleteHandler';
+
 const server = createServer();
 
-server.on('request', (req, res) => {
+server.on('request', async (req: IncomingMessage, res: ServerResponse) => {
+  const buffers = [];
+  let body: any;
+
+  // Receive req.body
+  for await (const chunk of req) {
+    buffers.push(chunk);
+  }
+
+  const data = Buffer.concat(buffers).toString();
+  if (data) {
+    body = JSON.parse(data);
+  }
+
   if (req.url && req.url.includes('/api/users')) {
-    res.writeHead(200, { 'Content-Type': 'application/json' });
-    res.end(
-      JSON.stringify({
-        data: 'Hello World!',
-      })
-    );
+    switch (req.method) {
+      case 'GET':
+        getHandler(req.url, res);
+        break;
+      case 'POST':
+        postHandler(body, res);
+        break;
+      case 'PUT':
+        putHandler(req.url, body, res);
+        break;
+      case 'DELETE':
+        deleteHandler(req.url, res);
+        break;
+    }
   } else {
-    res.writeHead(404, { 'Content-Type': 'application/json' });
-    res.end(
-      JSON.stringify({
-        message: 'Request to non-existing address',
-      })
-    );
+    sendRes(res, 404, { message: 'Request to non-existing address' });
   }
 });
 

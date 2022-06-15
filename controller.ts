@@ -1,6 +1,8 @@
+import { v4 } from 'uuid';
+
 import { db } from './db';
 import { IUser } from './interfaces/IUser';
-import { v4 } from 'uuid';
+import { ICreateNewUserDto } from './interfaces/ICreateNewUserDto';
 
 class Controller {
   getUsers(): IUser[] {
@@ -11,18 +13,13 @@ class Controller {
     return db.users.find((user: IUser) => user.userId === userId);
   }
 
-  createUser(username: string, age: number, hobbies: string[]): IUser {
-    const newUser = { username, age, hobbies, userId: v4() };
+  createUser(body: ICreateNewUserDto): IUser {
+    const newUser = { userId: v4(), ...body };
     db.users.push(newUser);
     return newUser;
   }
 
-  updateUser(
-    userId: string,
-    username: string,
-    age: number,
-    hobbies: string[]
-  ): IUser | undefined {
+  updateUser(userId: string, body: ICreateNewUserDto): IUser | undefined {
     let user = db.users.find((user: IUser) => user.userId === userId);
 
     if (!user) return user;
@@ -31,7 +28,7 @@ class Controller {
       (user: IUser) => user.userId === userId
     );
 
-    user = { userId, username, age, hobbies };
+    user = { userId, ...body };
     db.users[userIndex] = user;
 
     return user;
@@ -44,7 +41,7 @@ class Controller {
 
     if (userIndex === -1) return false;
 
-    db.users.splice(userIndex - 1, 1);
+    db.users.splice(userIndex, 1);
     return true;
   }
 }
