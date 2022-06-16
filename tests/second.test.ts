@@ -3,24 +3,11 @@ import request from 'supertest';
 import { server } from '../index';
 import { statusCodeEnum } from '../enums/statusCodeEnum';
 import { errMsgEnum } from '../enums/errMsgEnum';
+import { userId } from './createNewUserTest';
+import { createNewUser } from './createNewUserTest';
 
 describe('Scenario 2', () => {
-  let userId: string | undefined;
-
-  test('create new user', async () => {
-    const res = await request(server)
-      .post('/api/users')
-      .send({
-        username: 'Sergey',
-        age: 25,
-        hobbies: ['coding'],
-      });
-    expect(res.status).toBe(statusCodeEnum.created);
-    userId = res.body.user.userId;
-    expect(res.body.user).toHaveProperty('username', 'Sergey');
-    expect(res.body.user).toHaveProperty('age', 25);
-    expect(res.body.user.hobbies).toContain('coding');
-  });
+  test('create new user', createNewUser);
 
   test('delete user by id', async () => {
     const res = await request(server).delete(`/api/users/${userId}`);

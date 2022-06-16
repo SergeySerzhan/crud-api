@@ -3,10 +3,10 @@ import request from 'supertest';
 import { server } from '../index';
 import { statusCodeEnum } from '../enums/statusCodeEnum';
 import { errMsgEnum } from '../enums/errMsgEnum';
+import { userId } from './createNewUserTest';
+import { createNewUser } from './createNewUserTest';
 
 describe('Scenario 3', () => {
-  let userId: string | undefined;
-
   test('get non-existing route', async () => {
     const res = await request(server).get('/api/route');
     expect(res.status).toBe(statusCodeEnum.notFound);
@@ -33,20 +33,7 @@ describe('Scenario 3', () => {
     expect(res.body.message).toBe(errMsgEnum.badReq);
   });
 
-  test('create new user', async () => {
-    const res = await request(server)
-      .post('/api/users')
-      .send({
-        username: 'Sergey',
-        age: 25,
-        hobbies: ['coding'],
-      });
-    expect(res.status).toBe(statusCodeEnum.created);
-    userId = res.body.user.userId;
-    expect(res.body.user).toHaveProperty('username', 'Sergey');
-    expect(res.body.user).toHaveProperty('age', 25);
-    expect(res.body.user.hobbies).toContain('coding');
-  });
+  test('create new user', createNewUser);
 
   test('update user with not valid body', async () => {
     const res = await request(server).put(`/api/users/${userId}`).send({
