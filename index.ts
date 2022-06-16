@@ -7,45 +7,60 @@ import { getHandler } from './handlers/getHandler';
 import { postHandler } from './handlers/postHandler';
 import { putHandler } from './handlers/putHandler';
 import { deleteHandler } from './handlers/deleteHandler';
+import { CustomError } from './helpers/CustomError';
+import { statusCodeEnum } from './enums/statusCodeEnum';
+import { errMsgEnum } from './enums/errMsgEnum';
 
 const server = createServer();
 
 server.on('request', async (req: IncomingMessage, res: ServerResponse) => {
-  const buffers = [];
-  let body: any;
+  console.log(req.method, req.url);
+  try {
+    const buffers = [];
+    let body: any;
 
-  // Receive req.body
-  for await (const chunk of req) {
-    buffers.push(chunk);
-  }
-
-  const data = Buffer.concat(buffers).toString();
-  if (data) {
-    body = JSON.parse(data);
-  }
-
-  if (req.url && req.url.includes('/api/users')) {
-    switch (req.method) {
-      case 'GET':
-        getHandler(req.url, res);
-        break;
-      case 'POST':
-        postHandler(body, res);
-        break;
-      case 'PUT':
-        putHandler(req.url, body, res);
-        break;
-      case 'DELETE':
-        deleteHandler(req.url, res);
-        break;
+    // Receive req.body
+    for await (const chunk of req) {
+      buffers.push(chunk);
     }
-  } else {
-    sendRes(res, 404, { message: 'Request to non-existing address' });
+
+    const data = Buffer.concat(buffers).toString();
+    if (data) {
+      body = JSON.parse(data);
+    }
+
+    if (req.url && req.url.startsWith('/api/users')) {
+      switch (req.method) {
+        case 'GET':
+          getHandler(req.url, res);
+          break;
+        case 'POST':
+          postHandler(body, res);
+          break;
+        case 'PUT':
+          putHandler(req.url, body, res);
+          break;
+        case 'DELETE':
+          deleteHandler(req.url, res);
+          break;
+      }
+    } else {
+      throw new CustomError(statusCodeEnum.notFound, errMsgEnum.validAddr);
+    }
+  } catch (e) {
+    if (e instanceof CustomError)
+      sendRes(res, e.statusCode, { message: e.message });
   }
+
+  process.on('unhandledRejection', () => {
+    sendRes(res, statusCodeEnum.serverErr, { message: errMsgEnum.serverErr });
+    process.exit();
+  });
+
+  process.on('uncaughtException', () => {
+    sendRes(res, statusCodeEnum.serverErr, { message: errMsgEnum.serverErr });
+    process.exit();
+  });
 });
 
-const PORT = process.env.PORT || 8000;
-
-server.listen(PORT, () => {
-  console.log(`SERVER IS LISTENING ON PORT ${PORT}`);
-});
+export { server };
