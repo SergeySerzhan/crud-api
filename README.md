@@ -7,7 +7,7 @@ Run 'npm i' to install all dependencies.
 Run 'npm run start:dev' to run dev server on http://localhost:3000
 
 ## Build
-Run 'npm run start:prod' to build application and run server on http://localhost:3000
+Run 'npm run start:prod' to build application and run server on http://localhost:3000. Create ./dist with index.js file.
 
 ## Multi
 Run 'npm run start:multi' to  starts multiple instances of  application using the Node.js Cluster API (equal to the number of logical processor cores on the host machine)
