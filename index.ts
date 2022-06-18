@@ -14,7 +14,6 @@ import { errMsgEnum } from './enums/errMsgEnum';
 const server = createServer();
 
 server.on('request', async (req: IncomingMessage, res: ServerResponse) => {
-  console.log(req.method, req.url);
   try {
     const buffers = [];
     let body: any;
@@ -45,11 +44,12 @@ server.on('request', async (req: IncomingMessage, res: ServerResponse) => {
           break;
       }
     } else {
-      throw new CustomError(statusCodeEnum.notFound, errMsgEnum.validAddr);
+      sendRes(res, statusCodeEnum.notFound, { message: errMsgEnum.validAddr });
     }
   } catch (e) {
     if (e instanceof CustomError)
       sendRes(res, e.statusCode, { message: e.message });
+    else console.log(e);
   }
 
   process.on('unhandledRejection', () => {
@@ -61,6 +61,11 @@ server.on('request', async (req: IncomingMessage, res: ServerResponse) => {
     sendRes(res, statusCodeEnum.serverErr, { message: errMsgEnum.serverErr });
     process.exit();
   });
+});
+
+process.on('SIGINT', () => {
+  server.close();
+  process.exit();
 });
 
 export { server };

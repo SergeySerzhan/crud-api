@@ -5,7 +5,8 @@
   "scripts": {
     "start:dev": "nodemon ./server.ts",
     "start:prod": "webpack && node ./dist/index.js",
-    "tests": "node --experimental-vm-modules node_modules/jest/bin/jest.js"
+    "tests": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
+    "start:multi": "nodemon ./multi.ts"
   },
   "repository": {
     "type": "git",
