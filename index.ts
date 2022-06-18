@@ -54,11 +54,13 @@ server.on('request', async (req: IncomingMessage, res: ServerResponse) => {
 
   process.on('unhandledRejection', () => {
     sendRes(res, statusCodeEnum.serverErr, { message: errMsgEnum.serverErr });
+    server.close();
     process.exit();
   });
 
   process.on('uncaughtException', () => {
     sendRes(res, statusCodeEnum.serverErr, { message: errMsgEnum.serverErr });
+    server.close();
     process.exit();
   });
 });
