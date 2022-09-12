@@ -23,7 +23,7 @@ Get all users. Array with all users in JSON format.
 Example:
 ```json
 {
-            users: [{id: '1b9d6bcd-bbfd-4b2d-9b5d-ab8dfbbd4bed', username: 'Sergey', age: 25, hobbies: ['coding', 'playing computer games']}]
+            "users": [{"id": "1b9d6bcd-bbfd-4b2d-9b5d-ab8dfbbd4bed", "username": "Sergey", "age": 25, "hobbies": ["coding", "playing computer games"]}]
 }
 ```
 
@@ -32,7 +32,7 @@ Get user by id. Where userId is valid uuid.
 Example 
 ```json
 {
-            user: {id: '1b9d6bcd-bbfd-4b2d-9b5d-ab8dfbbd4bed', username: 'Sergey', age: 25, hobbies: ['coding', 'playing computer games']}
+            "users": [{"id": "1b9d6bcd-bbfd-4b2d-9b5d-ab8dfbbd4bed", "username": "Sergey", "age": 25, "hobbies": ["coding", "playing computer games"]}]
 }
 ```
 
@@ -48,7 +48,7 @@ Create user. Request should contain body in JSON format:
 Response looks like: 
 ```json
 {
-    user: user: {id: '1b9d6bcd-bbfd-4b2d-9b5d-ab8dfbbd4bed', username: 'Sergey', age: 25, hobbies: ['coding', 'playing computer games']}
+    "user": {"id": "1b9d6bcd-bbfd-4b2d-9b5d-ab8dfbbd4bed", "username": "Sergey", "age": 25, "hobbies": ["coding", "playing computer games"]}
 }
 ```
 
@@ -65,7 +65,7 @@ Fields 'username', 'age', 'hobbies' are REQUIRED.
 Response looks like:
 ```json
 {
-user: user: {id: '1b9d6bcd-bbfd-4b2d-9b5d-ab8dfbbd4bed', username: 'Sergey', age: 25, hobbies: ['coding', 'playing computer games']}
+    "user": {"id": "1b9d6bcd-bbfd-4b2d-9b5d-ab8dfbbd4bed", "username": "Sergey", "age": 25, "hobbies": ["coding", "playing computer games"]}
 }
 ```
 
